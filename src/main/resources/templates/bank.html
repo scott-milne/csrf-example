@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Getting Started: Handling Form Submission</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <h1>Bank</h1>
+    <p>
+        Current balance is £
+        <span id="balance" type="text" step=".01" th:text="${balance}"/>
+    </p>
+    <p>
+        Withdrawl:
+        <input id="withdraw" type="text" name="withdraw"/>
+        <input type="button" value="Withdraw" onclick="onWithdraw()"/>
+    </p>
+    
+    <script type="text/javascript">
+    function onWithdraw() {
+        var csrfToken = $('meta[name=csrf-token]').attr('content');
+        var httpRequest = new XMLHttpRequest();
+        httpRequest.open("POST", "/bank", true);
+        httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        httpRequest.setRequestHeader("X-CSRF-Token", csrfToken);
+        httpRequest.onreadystatechange = function() {
+            if(this.readyState == 4) if(this.status == 200) {
+                    document.getElementById("balance").value = this.responseText;
+            }
+        };
+        var httpParams = "withdraw=" + document.getElementById("withdraw").value;
+        httpRequest.send(httpParams);
+    }
+    </script>
+</body>
+
+</html>

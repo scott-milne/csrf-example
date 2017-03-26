@@ -1,8 +1,10 @@
-package uk.co.codera;
+package bank;
 
 import static com.jayway.restassured.RestAssured.get;
+import static com.jayway.restassured.RestAssured.post;
 import static org.hamcrest.CoreMatchers.containsString;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.IntegrationTest;
@@ -11,7 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = CsrfExampleApplication.class)
+@SpringApplicationConfiguration(classes = BankApplication.class)
 @WebAppConfiguration
 @IntegrationTest("server.port:0")
 public class AuthenticatedControlllerIT {
@@ -20,14 +22,15 @@ public class AuthenticatedControlllerIT {
 
     @Test
     public void shouldDisplayBalance() {
-        get("/balance").then().assertThat()
+        get("/bank").then().assertThat()
                 .body(containsString("Your balance is £" + String.format("%.02f", this.startingBalance)));
     }
 
+    @Ignore
     @Test
     public void shouldWithdrawAmount() {
         final int amount = 20;
-        get("/withdraw/" + amount).then().assertThat()
+        post("/withdraw").then().assertThat()
                 .body(containsString("Your balance is £" + String.format("%.02f", this.startingBalance - amount)));
     }
 
